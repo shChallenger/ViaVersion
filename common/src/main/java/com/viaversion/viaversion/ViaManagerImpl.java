@@ -199,6 +199,10 @@ public class ViaManagerImpl implements ViaManager {
                 SortedSet<ProtocolVersion> supportedVersions = injector.getServerProtocolVersions();
                 versionInfo = new ServerProtocolVersionRange(supportedVersions.first(), supportedVersions.last(), supportedVersions);
             } else {
+                if (serverProtocolVersion == ProtocolVersion.v1_9_3) {
+                    platform.getLogger().log(Level.WARNING, "Forcing protocol 1_9_2");
+                    serverProtocolVersion = ProtocolVersion.v1_9_2;
+                }
                 versionInfo = new ServerProtocolVersionSingleton(serverProtocolVersion);
             }
 
