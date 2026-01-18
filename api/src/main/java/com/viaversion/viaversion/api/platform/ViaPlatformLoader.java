@@ -24,6 +24,16 @@ package com.viaversion.viaversion.api.platform;
 
 public interface ViaPlatformLoader {
 
+    ViaPlatformLoader NOOP = new ViaPlatformLoader() {
+        @Override
+        public void load() {
+        }
+
+        @Override
+        public void unload() {
+        }
+    };
+
     /**
      * Initialise the loading for a platform, e.g. registering listeners / providers / events etc.
      */

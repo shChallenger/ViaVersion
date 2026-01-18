@@ -83,6 +83,37 @@ public class ProtocolVersionRange {
     }
 
     /**
+     * Returns a range that contains only the given version.
+     *
+     * @param version the version
+     * @return the range
+     *
+     */
+    public static ProtocolVersionRange singleton(final ProtocolVersion version) {
+        return new ProtocolVersionRange(Collections.singletonList(Range.singleton(version)));
+    }
+
+    /**
+     * Returns a range that contains all versions equal to or newer than the given version.
+     *
+     * @param version the version
+     * @return the range
+     */
+    public static ProtocolVersionRange andNewer(final ProtocolVersion version) {
+        return new ProtocolVersionRange(Collections.singletonList(Range.atLeast(version)));
+    }
+
+    /**
+     * Returns a range that contains all versions equal to or older than the given version.
+     *
+     * @param version the version
+     * @return the range
+     */
+    public static ProtocolVersionRange andOlder(final ProtocolVersion version) {
+        return new ProtocolVersionRange(Collections.singletonList(Range.atMost(version)));
+    }
+
+    /**
      * Adds a new range to this range. This method is only available if the range is not already containing all versions.
      *
      * @param range the range to add
@@ -93,6 +124,24 @@ public class ProtocolVersionRange {
             throw new UnsupportedOperationException("Range already contains all versions. Cannot add a new range.");
         }
         ranges.add(range);
+        return this;
+    }
+
+    /**
+     * Adds all ranges from the given range to this range. This method is only available if the range is not already containing all versions.
+     *
+     * @param range the range to add
+     * @return this range
+     */
+    public ProtocolVersionRange add(final ProtocolVersionRange range) {
+        if (ranges == null) {
+            throw new UnsupportedOperationException("Range already contains all versions. Cannot add a new range.");
+        }
+        if (range.ranges != null) {
+            ranges.addAll(range.ranges);
+        } else {
+            ranges = null;
+        }
         return this;
     }
 

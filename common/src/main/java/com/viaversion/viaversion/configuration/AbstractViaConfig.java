@@ -30,6 +30,7 @@ import com.viaversion.viaversion.util.ConfigSection;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -38,11 +39,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public abstract class AbstractViaConfig extends Config implements ViaVersionConfig {
+public class AbstractViaConfig extends Config implements ViaVersionConfig {
+
     public static final List<String> BUKKIT_ONLY_OPTIONS = Arrays.asList("register-userconnections-on-join", "quick-move-action-fix",
         "change-1_9-hitbox", "change-1_14-hitbox", "blockconnection-method", "armor-toggle-fix", "use-new-deathmessages",
         "item-cache", "nms-player-ticking");
-
     public static final List<String> VELOCITY_ONLY_OPTIONS = Arrays.asList("velocity-ping-interval", "velocity-ping-save", "velocity-servers");
 
     private boolean checkForUpdates;
@@ -99,8 +100,9 @@ public abstract class AbstractViaConfig extends Config implements ViaVersionConf
     private boolean cancelSwingInInventory;
     private int maxErrorLength;
     private boolean use1_8HitboxMargin;
+    private boolean sendServerDetails;
 
-    protected AbstractViaConfig(final File configFile, final Logger logger) {
+    public AbstractViaConfig(final File configFile, final Logger logger) {
         super(configFile, logger);
     }
 
@@ -111,6 +113,14 @@ public abstract class AbstractViaConfig extends Config implements ViaVersionConf
             save();
         }
         loadFields();
+    }
+
+    @Override
+    public List<String> getUnsupportedOptions() {
+        final List<String> unsupportedOptions = new ArrayList<>(BUKKIT_ONLY_OPTIONS);
+        unsupportedOptions.addAll(VELOCITY_ONLY_OPTIONS);
+        unsupportedOptions.add("check-for-updates");
+        return unsupportedOptions;
     }
 
     protected void loadFields() {
@@ -164,6 +174,7 @@ public abstract class AbstractViaConfig extends Config implements ViaVersionConf
         fix1_21PlacementRotation = getBoolean("fix-1_21-placement-rotation", true);
         cancelSwingInInventory = getBoolean("cancel-swing-in-inventory", true);
         use1_8HitboxMargin = getBoolean("use-1_8-hitbox-margin", true);
+        sendServerDetails = getBoolean("send-server-details", true);
         packetTrackerConfig = loadRateLimitConfig(getSection("packet-limiter"), "%pps", 1);
         packetSizeTrackerConfig = loadRateLimitConfig(getSection("packet-size-limiter"), "%bps", 1024);
 
@@ -630,5 +641,10 @@ public abstract class AbstractViaConfig extends Config implements ViaVersionConf
     @Override
     public boolean use1_8HitboxMargin() {
         return use1_8HitboxMargin;
+    }
+
+    @Override
+    public boolean sendServerDetails() {
+        return sendServerDetails;
     }
 }

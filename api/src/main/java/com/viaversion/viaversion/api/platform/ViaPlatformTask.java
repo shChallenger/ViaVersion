@@ -22,12 +22,15 @@
  */
 package com.viaversion.viaversion.api.platform;
 
-public interface ViaServerProxyPlatform<T> extends ViaPlatform<T> {
+import com.viaversion.viaversion.api.scheduler.Task;
 
-    /**
-     * Returns a service to get protocol versions for proxied servers.
-     *
-     * @return protocol detector service
-     */
-    ProtocolDetectorService protocolDetectorService();
+/**
+ * Implements {@link PlatformTask} for Via's own scheduler. If present and possible, platform schedulers should be used over this.
+ */
+public record ViaPlatformTask(Task task) implements PlatformTask<Task> {
+
+    @Override
+    public void cancel() {
+        task.cancel();
+    }
 }

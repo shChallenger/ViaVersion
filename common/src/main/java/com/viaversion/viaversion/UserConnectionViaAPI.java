@@ -1,6 +1,6 @@
 /*
  * This file is part of ViaVersion - https://github.com/ViaVersion/ViaVersion
- * Copyright (C) 2016-2025 ViaVersion and contributors
+ * Copyright (C) 2016-2026 ViaVersion and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,30 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.viaversion.viaversion.common.dummy;
+package com.viaversion.viaversion;
 
-import com.google.gson.JsonObject;
-import com.viaversion.viaversion.api.platform.ViaInjector;
+import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import io.netty.buffer.ByteBuf;
 
-public class TestInjector implements ViaInjector {
+/**
+ * Implements {@link ViaAPIBase} on Via's own {@link UserConnection}.
+ */
+public class UserConnectionViaAPI extends ViaAPIBase<UserConnection> {
 
     @Override
-    public void inject() {
+    public ProtocolVersion getPlayerProtocolVersion(final UserConnection connection) {
+        return connection.getProtocolInfo().protocolVersion();
     }
 
     @Override
-    public void uninject() {
-
-    }
-
-    @Override
-    public ProtocolVersion getServerProtocolVersion() {
-        return ProtocolVersion.v1_21_7;
-    }
-
-    @Override
-    public JsonObject getDump() {
-        return null;
+    public void sendRawPacket(final UserConnection connection, final ByteBuf packet) {
+        connection.sendRawPacket(packet);
     }
 }

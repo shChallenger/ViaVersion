@@ -43,11 +43,26 @@ import java.util.Set;
 
 import static com.viaversion.viaversion.api.command.ViaSubCommand.color;
 
-public abstract class ViaCommandHandler implements ViaVersionCommand {
+public class ViaCommandHandler implements ViaVersionCommand {
     private final Map<String, ViaSubCommand> commandMap = new HashMap<>();
 
-    protected ViaCommandHandler() {
-        registerDefaults();
+    @Deprecated
+    public ViaCommandHandler() {
+        this(true);
+    }
+
+    public ViaCommandHandler(final boolean checkForUpdates) {
+        registerSubCommand(new ListSubCmd());
+        registerSubCommand(new PPSSubCmd());
+        registerSubCommand(new DebugSubCmd());
+        registerSubCommand(new DumpSubCmd());
+        registerSubCommand(new DisplayLeaksSubCmd());
+        registerSubCommand(new AutoTeamSubCmd());
+        registerSubCommand(new ReloadSubCmd());
+        registerSubCommand(new PlayerSubCmd());
+        if (checkForUpdates) {
+            registerSubCommand(new DontBugMeSubCmd());
+        }
     }
 
     @Override
@@ -189,17 +204,5 @@ public abstract class ViaCommandHandler implements ViaVersionCommand {
 
     private boolean hasPermission(ViaCommandSender sender, String permission) {
         return permission == null || sender.hasPermission("viaversion.admin") || sender.hasPermission(permission);
-    }
-
-    private void registerDefaults() {
-        registerSubCommand(new ListSubCmd());
-        registerSubCommand(new PPSSubCmd());
-        registerSubCommand(new DebugSubCmd());
-        registerSubCommand(new DumpSubCmd());
-        registerSubCommand(new DisplayLeaksSubCmd());
-        registerSubCommand(new DontBugMeSubCmd());
-        registerSubCommand(new AutoTeamSubCmd());
-        registerSubCommand(new ReloadSubCmd());
-        registerSubCommand(new PlayerSubCmd());
     }
 }

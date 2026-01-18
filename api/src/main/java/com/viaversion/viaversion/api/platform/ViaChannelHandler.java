@@ -22,12 +22,20 @@
  */
 package com.viaversion.viaversion.api.platform;
 
-public interface ViaServerProxyPlatform<T> extends ViaPlatform<T> {
+import com.viaversion.viaversion.api.connection.UserConnection;
+
+/**
+ * Netty encoder/decoder for a specific {@link UserConnection}.
+ *
+ * @see ViaInjector#getDecoderName()
+ * @see ViaInjector#getEncoderName()
+ */
+public interface ViaChannelHandler {
 
     /**
-     * Returns a service to get protocol versions for proxied servers.
+     * Returns the user connection of the injected Netty pipeline.
      *
-     * @return protocol detector service
+     * @return the user connection
      */
-    ProtocolDetectorService protocolDetectorService();
+    UserConnection connection();
 }
