@@ -22,10 +22,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.yaml.snakeyaml.DumperOptions;
@@ -139,9 +139,9 @@ public abstract class Config extends ConfigSection {
 
         handleConfig(mergedConfig);
 
-        if (!mergedConfig.equals(existingConfig)) {
-            originalRoot = existingConfig != null ? new ConfigSection(this, "", existingConfig) : null;
+        originalRoot = existingConfig != null ? new ConfigSection(this, "", existingConfig) : null;
 
+        if (!mergedConfig.equals(existingConfig)) {
             // Also updates comments once values need to be saved
             save(location, mergedConfig);
         }
@@ -212,7 +212,7 @@ public abstract class Config extends ConfigSection {
         if (this.configFile.getParentFile() != null) {
             this.configFile.getParentFile().mkdirs();
         }
-        this.values = new ConcurrentSkipListMap<>(loadConfig(this.configFile));
+        this.values = Collections.synchronizedMap(loadConfig(this.configFile));
     }
 
     @Override
@@ -228,7 +228,7 @@ public abstract class Config extends ConfigSection {
     /**
      * Returns the pre-modification root section of the config if present.
      *
-     * @return pre-modification root section, or null if no config existed or it did not require changes on load
+     * @return pre-modification root section, or null if no config existed
      */
     public @Nullable ConfigSection originalRootSection() {
         return originalRoot;
